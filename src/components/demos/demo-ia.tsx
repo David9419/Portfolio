@@ -148,10 +148,10 @@ const taches = ["Répondre aux demandes", "Ajouter les clients au CRM", "Envoyer
 export function SceneResultat() {
   const n = useSequence(taches.length, 450, 300);
   return (
-    <div className="grid h-full gap-4 p-5 md:grid-cols-[1.2fr_1fr]">
+    <div className="grid h-full grid-cols-[1.4fr_1fr] gap-3 p-4 md:gap-4 md:p-5">
       <div className="space-y-2.5">
         {taches.map((t, i) => (
-          <div key={t} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 text-sm">
+          <div key={t} className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] p-2.5 text-xs md:gap-3 md:p-3 md:text-sm">
             <motion.span
               animate={i < n ? { backgroundColor: "#34d399", borderColor: "#34d399" } : {}}
               className="grid size-5 place-items-center rounded-md border border-white/30"
@@ -164,7 +164,7 @@ export function SceneResultat() {
       </div>
       <div className="flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-bleu/30 to-transparent p-4 text-center">
         <Clock className="size-6 text-bleu-clair" />
-        <p className="font-titre mt-2 text-5xl font-black text-white">
+        <p className="font-titre mt-2 text-3xl font-black text-white md:text-5xl">
           <Compteur valeur={10} suffixe=" h" />
         </p>
         <p className="mt-1 text-xs text-white/60">gagnées chaque semaine</p>

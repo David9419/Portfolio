@@ -12,8 +12,8 @@ type DocumentAvecTransition = Document & {
   startViewTransition?: (rappel: () => void) => { ready: Promise<void>; finished: Promise<void> };
 };
 
-// Bascule mode clair / mode sombre : le nouveau thème s'étend en cercle
-// depuis le bouton, avec un bord fondu, jusqu'à couvrir tout l'écran.
+// Bascule mode clair / mode sombre : l'ancien thème se referme en cercle
+// jusqu'à disparaître dans le bouton, et laisse apparaître le nouveau dessous.
 export function BoutonTheme({ className = "" }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
   const monte = useSyncExternalStore(rien, () => true, () => false);
@@ -34,9 +34,7 @@ export function BoutonTheme({ className = "" }: { className?: string }) {
     const r = ref.current.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
-    const rayon = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy)) + 160;
-    html.style.setProperty("--vt-x", `${cx}px`);
-    html.style.setProperty("--vt-y", `${cy}px`);
+    const rayon = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
     html.classList.add("vt");
 
     const transition = doc.startViewTransition(() => {
@@ -48,8 +46,8 @@ export function BoutonTheme({ className = "" }: { className?: string }) {
 
     transition.ready.then(() => {
       html.animate(
-        { "--vt-rayon": ["0px", `${rayon}px`] } as unknown as Keyframe[],
-        { duration: 1100, easing: "cubic-bezier(0.7, 0, 0.3, 1)", pseudoElement: "::view-transition-new(root)", fill: "forwards" },
+        { clipPath: [`circle(${rayon}px at ${cx}px ${cy}px)`, `circle(0px at ${cx}px ${cy}px)`] },
+        { duration: 900, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-old(root)", fill: "forwards" },
       );
     });
     transition.finished.finally(() => html.classList.remove("vt"));

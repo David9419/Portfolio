@@ -146,6 +146,82 @@ export function Navigation() {
   );
 }
 
+// Particules : positions fixes (pas de hasard, pour que le rendu soit stable).
+const particules = Array.from({ length: 14 }, (_, i) => ({
+  gauche: (i * 37 + 11) % 100,
+  taille: 2 + (i % 3),
+  duree: 7 + (i % 5) * 1.6,
+  delai: (i * 0.7) % 5,
+}));
+
+// Fond animé du menu : halos qui dérivent, grille, courbes lumineuses qui se dessinent,
+// particules qui montent et grand logo en filigrane qui flotte.
+function FondMenu() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      <motion.div
+        className="absolute -top-24 -right-24 size-96 rounded-full bg-bleu/35 blur-3xl"
+        animate={{ x: [0, -60, 20, 0], y: [0, 50, 90, 0], scale: [1, 1.15, 0.9, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute -bottom-32 -left-24 size-96 rounded-full bg-bleu-fonce/40 blur-3xl"
+        animate={{ x: [0, 70, -10, 0], y: [0, -60, -20, 0], scale: [1, 0.9, 1.2, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="grille absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.35 }}
+        transition={{ delay: 0.4, duration: 1.2 }}
+      />
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 800" preserveAspectRatio="none" fill="none">
+        {[0, 1, 2, 3].map((i) => (
+          <motion.path
+            key={i}
+            d={`M-20 ${620 - i * 70} C 120 ${520 - i * 60}, 260 ${760 - i * 50}, 420 ${380 - i * 80}`}
+            stroke="#60A5FA"
+            strokeOpacity={0.35 - i * 0.06}
+            strokeWidth={1}
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ delay: 0.45 + i * 0.12, duration: 1.6, ease: "easeInOut" }}
+          />
+        ))}
+        <motion.path
+          d="M-20 560 C 120 460, 260 700, 420 320"
+          stroke="#93C5FD"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeDasharray="40 760"
+          animate={{ strokeDashoffset: [800, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "linear", delay: 1.5 }}
+        />
+      </svg>
+      {particules.map((p, i) => (
+        <motion.span
+          key={i}
+          className="absolute bottom-0 rounded-full bg-bleu-clair"
+          style={{ left: `${p.gauche}%`, width: p.taille, height: p.taille }}
+          initial={{ y: 0, opacity: 0 }}
+          animate={{ y: [0, -900], opacity: [0, 0.8, 0] }}
+          transition={{ duration: p.duree, delay: p.delai, repeat: Infinity, ease: "linear" }}
+        />
+      ))}
+      <motion.div
+        className="absolute -right-10 bottom-24 text-white"
+        initial={{ opacity: 0, scale: 0.8, rotate: -8 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0, y: [0, -14, 0] }}
+        transition={{ opacity: { delay: 0.5, duration: 1 }, scale: { delay: 0.5, duration: 1 }, rotate: { delay: 0.5, duration: 1 }, y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
+      >
+        <div className="opacity-[0.07]">
+          <Logo className="h-56 w-auto" />
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 // Bouton à deux traits qui se transforment en croix.
 function BoutonBurger({ ouvert, onClick }: { ouvert: boolean; onClick: () => void }) {
   return (
@@ -198,8 +274,7 @@ function MenuMobile({
             variants={{ ferme: { clipPath: cercle("0px") }, ouvert: { clipPath: cercle("150%") } }}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
           >
-            <div className="absolute -top-20 -right-20 size-80 rounded-full bg-bleu/30 blur-3xl" aria-hidden />
-            <div className="grille absolute inset-0 opacity-30" aria-hidden />
+            <FondMenu />
 
             <nav className="relative flex h-full flex-col px-7 pt-32 pb-10">
               <motion.p

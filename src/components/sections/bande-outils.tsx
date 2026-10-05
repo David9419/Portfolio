@@ -1,56 +1,90 @@
 "use client";
 
-import { Sparkle } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
-import { TexteDefilant } from "@/components/animations";
+import {
+  Camera,
+  Clapperboard,
+  Database,
+  Flame,
+  Frame,
+  GitBranch,
+  Globe,
+  Heart,
+  Megaphone,
+  Music2,
+  Palette,
+  PenLine,
+  PenTool,
+  Scissors,
+  Shapes,
+  Sparkles,
+  Terminal,
+  Triangle,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import { TexteDefilant, TexteBrouille } from "@/components/animations";
 import { outils } from "@/lib/contenu";
 
-function Element({ nom, plein }: { nom: string; plein?: boolean }) {
+const iconesOutils: Record<string, LucideIcon> = {
+  "Claude Code": Sparkles,
+  Terminal: Terminal,
+  GitHub: GitBranch,
+  Vercel: Triangle,
+  Netlify: Globe,
+  Supabase: Database,
+  Firebase: Flame,
+  Lovable: Heart,
+  Framer: Frame,
+  Canva: Palette,
+  CapCut: Scissors,
+  Figma: PenTool,
+  "Création graphique": Shapes,
+  "Montage vidéo": Clapperboard,
+  Instagram: Camera,
+  TikTok: Music2,
+  "Création de contenus": PenLine,
+  "Gestion de comptes": Users,
+  "Promotion de projets": Megaphone,
+};
+
+function Pastille({ nom }: { nom: string }) {
+  const Icone = iconesOutils[nom] ?? Sparkles;
   return (
-    <span className="group/el flex items-center gap-6 px-6">
-      <span
-        className={`font-titre text-2xl font-extrabold tracking-tight whitespace-nowrap transition-all duration-300 md:text-4xl ${
-          plein
-            ? "text-white group-hover/el:text-nuit"
-            : "text-transparent [-webkit-text-stroke:1px_var(--texte-doux)] group-hover/el:text-bleu group-hover/el:[-webkit-text-stroke:1px_transparent]"
-        }`}
-      >
-        {nom}
+    <span className="group/p mx-2 flex items-center gap-3 rounded-2xl border border-bordure bg-carte py-2.5 ps-2.5 pe-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-bleu/50 hover:shadow-lg hover:shadow-bleu/10 md:mx-2.5">
+      <span className="grid size-9 place-items-center rounded-xl bg-bleu/10 text-bleu transition-colors duration-300 group-hover/p:bg-bleu group-hover/p:text-white">
+        <Icone className="size-[18px]" strokeWidth={1.8} />
       </span>
-      <Sparkle
-        className={`size-5 shrink-0 transition-transform duration-500 group-hover/el:rotate-180 ${plein ? "text-white/70" : "text-bleu"}`}
-      />
+      <span className="text-sm font-semibold whitespace-nowrap text-texte md:text-[15px]">{nom}</span>
     </span>
   );
 }
 
-// Deux bandes croisées qui défilent en sens inverse. Elles réagissent au défilement :
-// plus on descend vite, plus elles accélèrent ; quand on remonte, elles changent de sens.
+// Les outils que j'utilise, sur deux lignes qui glissent en sens inverse.
+// Elles accélèrent quand on fait défiler la page et changent de sens quand on remonte.
 export function BandeOutils() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const rotation1 = useTransform(scrollYProgress, [0, 1], [-5, 1]);
-  const rotation2 = useTransform(scrollYProgress, [0, 1], [4, -2]);
   const tous = outils.flatMap((g) => g.liste);
   const moitie = Math.ceil(tous.length / 2);
+  const fondu = "[mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]";
 
   return (
-    <section ref={ref} aria-label="Outils et technologies" className="relative overflow-hidden py-16">
-      <motion.div style={{ rotate: rotation1 }} className="relative z-10 -mx-10 bg-bleu py-5 shadow-2xl shadow-bleu/30">
-        <TexteDefilant vitesse={2.2}>
+    <section aria-label="Outils et technologies" className="relative py-16 md:py-24">
+      <p className="font-titre mb-10 flex items-center justify-center gap-3 text-center text-xs font-semibold tracking-[0.35em] text-doux uppercase">
+        <span className="h-px w-8 bg-bordure md:w-16" />
+        <TexteBrouille texte="Mes outils au quotidien" />
+        <span className="h-px w-8 bg-bordure md:w-16" />
+      </p>
+      <div className={`space-y-4 ${fondu}`}>
+        <TexteDefilant vitesse={1.4} inclinaison={false} className="py-1">
           {tous.slice(0, moitie).map((o) => (
-            <Element key={o} nom={o} plein />
+            <Pastille key={o} nom={o} />
           ))}
         </TexteDefilant>
-      </motion.div>
-      <motion.div style={{ rotate: rotation2 }} className="-mx-10 mt-8 border-y border-bordure bg-fond-2 py-5">
-        <TexteDefilant vitesse={-2.2}>
+        <TexteDefilant vitesse={-1.4} inclinaison={false} className="py-1">
           {tous.slice(moitie).map((o) => (
-            <Element key={o} nom={o} />
+            <Pastille key={o} nom={o} />
           ))}
         </TexteDefilant>
-      </motion.div>
+      </div>
     </section>
   );
 }

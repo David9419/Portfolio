@@ -44,20 +44,18 @@
   --font-signature: var(--font-allura);
 }
 
-/* Transition ronde du mode sombre / clair, depuis le bouton */
-@property --vt-rayon {
-  syntax: "<length>";
-  initial-value: 0px;
-  inherits: false;
-}
+/* Transition du mode sombre / clair : l'ancien thème rétrécit en cercle
+   jusqu'à disparaître dans le bouton, le nouveau apparaît dessous. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
+::view-transition-old(root) {
+  z-index: 2;
+}
 ::view-transition-new(root) {
-  -webkit-mask: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-rayon) - 140px), transparent var(--vt-rayon));
-  mask: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-rayon) - 140px), transparent var(--vt-rayon));
+  z-index: 1;
 }
 html.vt *,
 html.vt *::before,
@@ -173,4 +171,10 @@ body {
 @keyframes defile-apercu {
   0%, 10% { object-position: top; }
   90%, 100% { object-position: bottom; }
+}
+
+/* Barre de progression des étapes (section Expertise) */
+@keyframes progression-etape {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }

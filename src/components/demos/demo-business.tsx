@@ -58,7 +58,7 @@ const contacts = ["Restaurant Le Delice", "Cabinet Cohen", "Boutique Mila", "Gar
 export function SceneProspection() {
   const n = useSequence(contacts.length, 600, 500);
   return (
-    <div className="flex h-full flex-col gap-3 p-5">
+    <div className="flex h-full flex-col gap-2.5 p-4 md:p-5">
       <p className="text-xs tracking-widest text-white/40">PROSPECTION · CETTE SEMAINE</p>
       {contacts.map((nom, i) => (
         <motion.div
@@ -66,7 +66,7 @@ export function SceneProspection() {
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.1 }}
-          className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3"
+          className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-2.5"
         >
           <span className="grid size-9 place-items-center rounded-full bg-gradient-to-br from-bleu to-bleu-fonce text-xs font-bold text-white">
             {nom.split(" ").pop()?.[0]}
