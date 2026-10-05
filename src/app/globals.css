@@ -44,17 +44,24 @@
   --font-signature: var(--font-allura);
 }
 
-/* Transition du mode sombre / clair : l'ancien thème rétrécit en cercle
-   jusqu'à disparaître dans le bouton, le nouveau apparaît dessous. */
+/* Transition du mode sombre / clair (cercle depuis le bouton) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
-::view-transition-old(root) {
+/* Vers le sombre : le nouveau thème (sombre) est au-dessus et grandit depuis le bouton.
+   Vers le clair : l'ancien thème (sombre) est au-dessus et se referme dans le bouton. */
+html.vt-vers-sombre::view-transition-new(root) {
   z-index: 2;
 }
-::view-transition-new(root) {
+html.vt-vers-sombre::view-transition-old(root) {
+  z-index: 1;
+}
+html.vt-vers-clair::view-transition-old(root) {
+  z-index: 2;
+}
+html.vt-vers-clair::view-transition-new(root) {
   z-index: 1;
 }
 html.vt *,

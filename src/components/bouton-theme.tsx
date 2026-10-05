@@ -12,21 +12,23 @@ type DocumentAvecTransition = Document & {
   startViewTransition?: (rappel: () => void) => { ready: Promise<void>; finished: Promise<void> };
 };
 
-// Bascule mode clair / mode sombre : l'ancien thème se referme en cercle
-// jusqu'à disparaître dans le bouton, et laisse apparaître le nouveau dessous.
+// Bascule mode clair / mode sombre, avec un cercle sombre qui part du bouton :
+// - vers le sombre : le cercle sombre grandit depuis le bouton jusqu'à couvrir l'écran ;
+// - vers le clair : le sombre se referme en cercle jusqu'à disparaître dans le bouton.
 export function BoutonTheme({ className = "" }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
   const monte = useSyncExternalStore(rien, () => true, () => false);
   const sombre = monte && resolvedTheme === "dark";
   const ref = useRef<HTMLButtonElement>(null);
+  const enCours = useRef(false);
 
   const basculer = () => {
+    if (enCours.current) return;
     const nouveau = sombre ? "light" : "dark";
     const doc = document as DocumentAvecTransition;
     const html = document.documentElement;
-    const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!doc.startViewTransition || reduit || !ref.current) {
+    if (!doc.startViewTransition || !ref.current) {
       setTheme(nouveau);
       return;
     }
@@ -35,22 +37,35 @@ export function BoutonTheme({ className = "" }: { className?: string }) {
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
     const rayon = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
-    html.classList.add("vt");
+    const versSombre = nouveau === "dark";
+    const petit = `circle(0px at ${cx}px ${cy}px)`;
+    const grand = `circle(${rayon}px at ${cx}px ${cy}px)`;
+
+    enCours.current = true;
+    html.classList.add("vt", versSombre ? "vt-vers-sombre" : "vt-vers-clair");
 
     const transition = doc.startViewTransition(() => {
-      html.classList.toggle("dark", nouveau === "dark");
-      html.classList.toggle("light", nouveau === "light");
+      html.classList.toggle("dark", versSombre);
+      html.classList.toggle("light", !versSombre);
       html.style.colorScheme = nouveau;
       flushSync(() => setTheme(nouveau));
     });
 
     transition.ready.then(() => {
       html.animate(
-        { clipPath: [`circle(${rayon}px at ${cx}px ${cy}px)`, `circle(0px at ${cx}px ${cy}px)`] },
-        { duration: 900, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-old(root)", fill: "forwards" },
+        { clipPath: versSombre ? [petit, grand] : [grand, petit] },
+        {
+          duration: 1000,
+          easing: "cubic-bezier(0.65, 0, 0.35, 1)",
+          pseudoElement: versSombre ? "::view-transition-new(root)" : "::view-transition-old(root)",
+          fill: "forwards",
+        },
       );
     });
-    transition.finished.finally(() => html.classList.remove("vt"));
+    transition.finished.finally(() => {
+      html.classList.remove("vt", "vt-vers-sombre", "vt-vers-clair");
+      enCours.current = false;
+    });
   };
 
   return (
