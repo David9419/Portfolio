@@ -1,26 +1,158 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Couleurs de la charte : Bleu principal #3B82F6, Bleu nuit #0B1220, Gris clair #E5E7EB, Blanc */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --fond: #ffffff;
+  --fond-2: #f4f6fa;
+  --carte: #ffffff;
+  --texte: #0b1220;
+  --texte-doux: #4b5568;
+  --bordure: #e5e7eb;
+  --bleu: #3b82f6;
+  --bleu-fonce: #1d4ed8;
+  --bleu-clair: #60a5fa;
+  --nuit: #0b1220;
+  --halo: rgba(59, 130, 246, 0.18);
+}
+
+.dark {
+  --fond: #050a14;
+  --fond-2: #0b1220;
+  --carte: #0d1526;
+  --texte: #f3f6fb;
+  --texte-doux: #9aa6bd;
+  --bordure: rgba(255, 255, 255, 0.08);
+  --halo: rgba(59, 130, 246, 0.28);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-fond: var(--fond);
+  --color-fond-2: var(--fond-2);
+  --color-carte: var(--carte);
+  --color-texte: var(--texte);
+  --color-doux: var(--texte-doux);
+  --color-bordure: var(--bordure);
+  --color-bleu: var(--bleu);
+  --color-bleu-fonce: var(--bleu-fonce);
+  --color-bleu-clair: var(--bleu-clair);
+  --color-nuit: var(--nuit);
+  --font-sans: var(--font-inter);
+  --font-titre: var(--font-montserrat);
+  --font-signature: var(--font-allura);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: var(--bleu);
+  color: white;
+}
+
+/* Texte en dégradé bleu */
+.texte-degrade {
+  background: linear-gradient(100deg, #60a5fa 0%, #3b82f6 45%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Texte qui brille (balayage de lumière) */
+.texte-brillant {
+  background: linear-gradient(110deg, #3b82f6 35%, #bfdbfe 50%, #3b82f6 65%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: brillance 4s linear infinite;
+}
+
+@keyframes brillance {
+  from { background-position: 100% 0; }
+  to { background-position: -150% 0; }
+}
+
+/* Grille de fond discrète */
+.grille {
+  background-image:
+    linear-gradient(to right, var(--bordure) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--bordure) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+
+/* Bande défilante des outils */
+.defilement {
+  animation: defiler 40s linear infinite;
+}
+.defilement-inverse {
+  animation: defiler 46s linear infinite reverse;
+}
+@keyframes defiler {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Halos flottants */
+@keyframes flotter {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(4%, -6%) scale(1.08); }
+  66% { transform: translate(-5%, 4%) scale(0.95); }
+}
+.flotter {
+  animation: flotter 18s ease-in-out infinite;
+}
+
+/* Bordure lumineuse qui tourne */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.bordure-tournante {
+  position: relative;
+}
+.bordure-tournante::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle), transparent 60%, #3b82f6 80%, #93c5fd 90%, transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: tourner 5s linear infinite;
+  pointer-events: none;
+}
+@keyframes tourner {
+  to { --angle: 360deg; }
+}
+
+/* Grain léger pour un rendu « premium » */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .defilement, .defilement-inverse, .flotter, .texte-brillant, .bordure-tournante::before {
+    animation: none;
+  }
 }
