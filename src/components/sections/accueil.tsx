@@ -3,11 +3,11 @@
 import { ArrowDown, ArrowRight, Code2, Database, Globe, Smartphone } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { Magnetique, MotsAnimes } from "@/components/animations";
+import { CarteInclinable, Magnetique, MotRotatif, MotsAnimes, TexteBrouille } from "@/components/animations";
 import { Logo } from "@/components/logo";
 import { identite } from "@/lib/contenu";
 
-const D = 2.1; // les animations démarrent après l'écran d'ouverture
+const D = 2.3; // les animations démarrent après l'écran d'ouverture
 
 const bulles = [
   { Icone: Code2, classe: "-top-6 left-4", delai: 0 },
@@ -65,9 +65,14 @@ export function SectionAccueil() {
             Disponible pour de nouveaux projets
           </motion.div>
 
-          <p className="font-titre mb-5 text-xs font-semibold tracking-[0.3em] text-doux uppercase sm:text-sm">
-            <MotsAnimes texte={`${identite.prenom} ${identite.nom} · ${identite.titre}`} delai={D + 0.1} immediat />
-          </p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: D + 0.1 }}
+            className="font-titre mb-5 text-xs font-semibold tracking-[0.3em] text-doux uppercase sm:text-sm"
+          >
+            <TexteBrouille texte={`${identite.prenom} ${identite.nom} · ${identite.titre}`} delai={D} />
+          </motion.p>
 
           <h1 className="font-titre text-5xl leading-[0.98] font-black tracking-tight sm:text-7xl xl:text-[5.25rem]">
             <MotsAnimes texte="Des idées aux" delai={D + 0.25} immediat />
@@ -81,8 +86,12 @@ export function SectionAccueil() {
             transition={{ delay: D + 0.8, duration: 0.8 }}
             className="mt-8 max-w-xl text-lg leading-relaxed text-doux"
           >
-            Je crée des sites, des logiciels, des SaaS et des solutions digitales pour donner vie à vos projets —
-            du concept jusqu’à la mise en ligne.
+            Je conçois des{" "}
+            <MotRotatif
+              mots={["sites internet", "logiciels", "SaaS", "CRM", "identités visuelles", "contenus vidéo"]}
+              className="font-semibold text-texte"
+            />
+            <br className="hidden sm:block" /> pour donner vie à vos idées — du concept jusqu’à la mise en ligne.
           </motion.p>
 
           <motion.div
@@ -128,6 +137,7 @@ export function SectionAccueil() {
 
         {/* Carte logo avec bordure lumineuse et icônes qui flottent */}
         <motion.div style={{ y: yCarte }} className="relative mx-auto hidden w-full max-w-sm lg:block">
+          <CarteInclinable className="rounded-[2rem]">
           <motion.div
             initial={{ opacity: 0, scale: 0.85, rotate: -6 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -159,7 +169,7 @@ export function SectionAccueil() {
               <p className="font-signature text-center text-4xl text-bleu-clair">David Baron</p>
             </div>
           </motion.div>
-
+          </CarteInclinable>
           {bulles.map(({ Icone, classe, delai }, i) => (
             <motion.div
               key={i}

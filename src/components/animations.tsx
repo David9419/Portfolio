@@ -1,13 +1,17 @@
 "use client";
 
 import {
+  AnimatePresence,
   animate,
   motion,
+  useAnimationFrame,
   useInView,
   useMotionTemplate,
   useMotionValue,
+  useScroll,
   useSpring,
   useTransform,
+  useVelocity,
   type HTMLMotionProps,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -166,8 +170,14 @@ export function EnteteSection({ numero, libelle, titre, accent }: { numero: stri
       <Apparition>
         <p className="font-titre mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-bleu">
           <span className="text-doux">{numero}</span>
-          <span className="h-px w-10 bg-bleu" />
-          {libelle}
+          <motion.span
+            className="h-px w-10 origin-left bg-bleu"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: douceur }}
+          />
+          <TexteBrouille texte={libelle} />
         </p>
       </Apparition>
       <h2 className="font-titre text-4xl font-extrabold leading-[1.05] tracking-tight md:text-6xl">
@@ -179,6 +189,121 @@ export function EnteteSection({ numero, libelle, titre, accent }: { numero: stri
           </>
         ) : null}
       </h2>
+    </div>
+  );
+}
+
+const signes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&*+=/<>";
+
+// Texte qui se « décode » lettre par lettre quand il apparaît à l'écran.
+export function TexteBrouille({ texte, className, delai = 0 }: { texte: string; className?: string; delai?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const visible = useInView(ref, { once: true, margin: "-40px" });
+  const [affiche, setAffiche] = useState(texte);
+
+  useEffect(() => {
+    if (!visible) return;
+    let image = 0;
+    let minuteur = 0;
+    const debut = performance.now() + delai * 1000;
+    const duree = 600 + texte.length * 35;
+    const tour = (maintenant: number) => {
+      const avance = Math.max(0, (maintenant - debut) / duree);
+      const fixes = Math.floor(avance * texte.length);
+      setAffiche(
+        texte
+          .split("")
+          .map((c, i) => (i < fixes || c === " " ? c : signes[Math.floor(Math.random() * signes.length)]))
+          .join(""),
+      );
+      if (avance < 1) minuteur = window.setTimeout(() => (image = requestAnimationFrame(tour)), 40);
+      else setAffiche(texte);
+    };
+    image = requestAnimationFrame(tour);
+    return () => {
+      cancelAnimationFrame(image);
+      clearTimeout(minuteur);
+    };
+  }, [visible, texte, delai]);
+
+  return (
+    <span ref={ref} className={className} aria-label={texte}>
+      <span aria-hidden>{affiche}</span>
+    </span>
+  );
+}
+
+// Mot qui change toutes les 2 secondes (glisse vers le haut avec un flou).
+export function MotRotatif({ mots, className }: { mots: string[]; className?: string }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const minuteur = setInterval(() => setIndex((i) => (i + 1) % mots.length), 2200);
+    return () => clearInterval(minuteur);
+  }, [mots.length]);
+
+  return (
+    <span className="relative inline-grid overflow-hidden align-bottom">
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={mots[index]}
+          initial={{ y: "100%", opacity: 0, filter: "blur(6px)" }}
+          animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
+          exit={{ y: "-100%", opacity: 0, filter: "blur(6px)" }}
+          transition={{ duration: 0.6, ease: douceur }}
+          className={`inline-block whitespace-nowrap ${className ?? ""}`}
+        >
+          {mots[index]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+const boucler = (min: number, max: number, v: number) => {
+  const plage = max - min;
+  return ((((v - min) % plage) + plage) % plage) + min;
+};
+
+// Bande qui défile en continu : elle accélère quand on fait défiler la page,
+// et change de sens quand on remonte. Elle s'incline légèrement avec la vitesse.
+export function TexteDefilant({
+  children,
+  vitesse = 3,
+  inclinaison = true,
+  className,
+}: {
+  children: React.ReactNode;
+  vitesse?: number;
+  inclinaison?: boolean;
+  className?: string;
+}) {
+  const base = useMotionValue(0);
+  const { scrollY } = useScroll();
+  const vitesseDefilement = useVelocity(scrollY);
+  const lisse = useSpring(vitesseDefilement, { damping: 50, stiffness: 400 });
+  const facteur = useTransform(lisse, [0, 1000], [0, 4], { clamp: false });
+  const penche = useTransform(lisse, [-2000, 0, 2000], [8, 0, -8]);
+  const x = useTransform(base, (v) => `${boucler(-25, 0, v)}%`);
+  const sens = useRef(1);
+
+  useAnimationFrame((_, delta) => {
+    const f = facteur.get();
+    if (f < 0) sens.current = -1;
+    else if (f > 0) sens.current = 1;
+    let pas = sens.current * vitesse * (delta / 1000);
+    pas += pas * Math.abs(f);
+    base.set(base.get() - pas);
+  });
+
+  return (
+    <div className={`flex overflow-hidden whitespace-nowrap ${className ?? ""}`}>
+      <motion.div className="flex shrink-0 flex-nowrap" style={{ x, skewX: inclinaison ? penche : 0 }}>
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="flex shrink-0 items-center" aria-hidden={i > 0}>
+            {children}
+          </div>
+        ))}
+      </motion.div>
     </div>
   );
 }

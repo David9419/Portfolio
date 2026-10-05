@@ -16,8 +16,9 @@ export const identite = {
 export const navigation = [
   { id: "a-propos", libelle: "À propos" },
   { id: "projets", libelle: "Projets" },
-  { id: "competences", libelle: "Compétences" },
+  { id: "expertise", libelle: "Expertise" },
   { id: "parcours", libelle: "Parcours" },
+  { id: "methode", libelle: "Méthode" },
   { id: "contact", libelle: "Contact" },
 ];
 
@@ -50,6 +51,8 @@ export type Projet = {
   description: string;
   role: string[];
   site?: string;
+  domaine?: string;
+  image?: string;
   instagram?: string;
   lienAVenir?: string;
   couleurs: [string, string];
@@ -64,6 +67,8 @@ export const projets: Projet[] = [
       "Un logiciel que j’ai créé et que je développe comme un véritable projet entrepreneurial : il met en relation une personne qui a besoin d’une mitsva avec l’intervenant disponible le plus proche, grâce à la géolocalisation.",
     role: ["Conception", "Identité visuelle", "Site & application", "Communication", "Développement"],
     site: "https://www.mivtsa-now.com/",
+    domaine: "mivtsa-now.com",
+    image: "/projets/mivtsanow.jpg",
     instagram: "https://www.instagram.com/mivtsanow",
     couleurs: ["#3B82F6", "#1E3A8A"],
   },
@@ -75,6 +80,8 @@ export const projets: Projet[] = [
       "Mon projet entrepreneurial autour des concours et tirages au sort. J’ai travaillé sur son identité, son site internet, sa communication, ses supports visuels, son modèle économique et son développement.",
     role: ["Identité", "Site internet", "Supports visuels", "Modèle économique"],
     site: "https://golden-chance-sandy.vercel.app/",
+    domaine: "golden-chance-sandy.vercel.app",
+    image: "/projets/goldenchance.jpg",
     instagram: "https://www.instagram.com/goldenchanceconcours",
     couleurs: ["#F5B83D", "#B45309"],
   },
@@ -85,6 +92,7 @@ export const projets: Projet[] = [
     description:
       "Une activité d’achat-revente, notamment sur Vinted. Elle me permet de développer mes compétences commerciales : repérer les opportunités, gérer des produits, créer des annonces et comprendre la vente en ligne.",
     role: ["Repérage d’opportunités", "Annonces", "Gestion des produits", "Vente"],
+    domaine: "vinted.fr",
     lienAVenir: "Lien Vinted bientôt disponible",
     couleurs: ["#14B8A6", "#0F766E"],
   },
@@ -152,6 +160,14 @@ export const outils = [
 ];
 
 export const parcours = [
+  {
+    type: "Entrepreneuriat",
+    lieu: "Mes propres projets",
+    periode: "En continu",
+    texte:
+      "Je complète ma formation en créant mes propres projets, de A à Z : c’est là que j’apprends le plus vite, en conditions réelles, face à de vrais utilisateurs.",
+    points: ["MivtsaNow", "GoldenChance", "Achat-revente sur Vinted", "Identités visuelles", "Sites & logiciels", "Communication"],
+  },
   {
     type: "Alternance",
     lieu: "Le Silence des Justes",

@@ -2,38 +2,86 @@
 
 import { ArrowUpRight, Clock } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
 import { useRef } from "react";
 import { Apparition, CarteInclinable, EnteteSection } from "@/components/animations";
 import { IconeInstagram } from "@/components/icones";
 import { projets, type Projet } from "@/lib/contenu";
 
-// Visuel abstrait propre à chaque projet (à remplacer plus tard par de vraies captures).
-function Visuel({ projet, index }: { projet: Projet; index: number }) {
-  const [c1, c2] = projet.couleurs;
+// Aperçu d'une boutique à venir (en attendant le vrai lien).
+function BoutiqueAVenir() {
+  const articles = [
+    { prix: "35 €", teinte: "from-teal-400/70 to-teal-900" },
+    { prix: "18 €", teinte: "from-sky-400/70 to-indigo-900" },
+    { prix: "52 €", teinte: "from-amber-300/70 to-orange-900" },
+    { prix: "24 €", teinte: "from-rose-300/70 to-rose-900" },
+    { prix: "40 €", teinte: "from-emerald-300/70 to-emerald-900" },
+    { prix: "15 €", teinte: "from-violet-300/70 to-violet-900" },
+  ];
   return (
-    <div
-      className={`relative aspect-[16/10] overflow-hidden rounded-2xl ${index === 0 ? "md:aspect-[21/8]" : ""}`}
-      style={{ background: `radial-gradient(120% 120% at 100% 100%, ${c1} 0%, ${c2} 35%, #050a14 75%)` }}
-    >
-      <svg viewBox="0 0 400 250" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" fill="none" aria-hidden>
-        {Array.from({ length: 12 }).map((_, i) => (
-          <path
+    <div className="absolute inset-0 bg-[#f6f7f8] p-4 text-[#111] md:p-5">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-black tracking-tight text-teal-600">Vinted</span>
+        <span className="h-5 w-24 rounded-full bg-black/5" />
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-2.5">
+        {articles.map((a, i) => (
+          <motion.div
             key={i}
-            d={`M-20 ${60 + i * 18} C 120 ${index % 2 ? 20 + i * 14 : 200 - i * 8}, 260 ${index % 2 ? 260 - i * 6 : 30 + i * 16}, 420 ${100 + i * 12}`}
-            stroke="white"
-            strokeOpacity={0.06 + i * 0.012}
-          />
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 + i * 0.08 }}
+            className="rounded-lg bg-white p-1.5 shadow-sm"
+          >
+            <div className={`aspect-[4/3] rounded-md bg-gradient-to-br ${a.teinte}`} />
+            <p className="mt-1 text-[10px] font-bold">{a.prix}</p>
+          </motion.div>
         ))}
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110">
-        <span className={`font-titre font-black tracking-tight text-white drop-shadow-2xl ${index === 0 ? "text-5xl md:text-7xl" : "text-4xl md:text-5xl"}`}>
-          {projet.nom}
+      </div>
+      <div className="absolute inset-0 grid place-items-center bg-black/40 backdrop-blur-[2px]">
+        <span className="rounded-full border border-white/30 bg-black/50 px-4 py-2 text-xs font-semibold tracking-wider text-white uppercase">
+          Boutique bientôt en ligne
         </span>
       </div>
-      <div className="absolute top-4 left-4 flex gap-1.5">
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="size-2.5 rounded-full bg-white/30" />
-        ))}
+    </div>
+  );
+}
+
+// Aperçu du vrai site dans une fenêtre de navigateur.
+// Au survol, la page défile doucement de haut en bas, comme si on la parcourait.
+function Apercu({ projet, index }: { projet: Projet; index: number }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-bordure bg-nuit">
+      <div className="flex items-center gap-3 border-b border-white/10 bg-[#0d1526] px-4 py-2.5">
+        <div className="flex gap-1.5">
+          <span className="size-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="size-2.5 rounded-full bg-[#febc2e]" />
+          <span className="size-2.5 rounded-full bg-[#28c840]" />
+        </div>
+        <div className="mx-auto flex max-w-[70%] items-center gap-2 truncate rounded-md bg-white/5 px-3 py-1 text-[11px] text-white/60">
+          <span className="size-1.5 shrink-0 rounded-full bg-emerald-400" />
+          {projet.domaine}
+        </div>
+        <span className="w-10" />
+      </div>
+      <div className={`relative aspect-[16/10] overflow-hidden ${index === 0 ? "md:aspect-[2/1]" : ""}`}>
+        {projet.image ? (
+          <>
+            <Image
+              src={projet.image}
+              alt={`Aperçu du site ${projet.nom}`}
+              fill
+              sizes={index === 0 ? "(min-width: 768px) 1100px, 100vw" : "(min-width: 768px) 560px, 100vw"}
+              className="apercu-defile object-cover object-top transition-[object-position] duration-[6s] ease-in-out group-hover:object-bottom"
+            />
+            <span className="pointer-events-none absolute right-3 bottom-3 rounded-full [@media(hover:none)]:hidden bg-black/60 px-3 py-1 text-[10px] font-medium tracking-wider text-white/80 uppercase opacity-100 backdrop-blur transition-opacity duration-500 group-hover:opacity-0">
+              Survolez pour parcourir
+            </span>
+          </>
+        ) : (
+          <BoutiqueAVenir />
+        )}
       </div>
     </div>
   );
@@ -48,7 +96,7 @@ function CarteProjet({ projet, index }: { projet: Projet; index: number }) {
     <motion.div ref={ref} style={{ y: index % 2 ? y : undefined }}>
       <Apparition delai={index * 0.1}>
         <CarteInclinable className="rounded-3xl border border-bordure bg-carte p-3 transition-shadow duration-500 hover:shadow-2xl hover:shadow-bleu/15">
-          <Visuel projet={projet} index={index} />
+          <Apercu projet={projet} index={index} />
           <div className="p-5">
             <div className="flex items-center justify-between text-xs text-doux">
               <span className="font-semibold tracking-wider text-bleu uppercase">{projet.categorie}</span>
@@ -107,7 +155,7 @@ export function SectionProjets() {
         <EnteteSection numero="02" libelle="Mes projets" titre="Des idées devenues" accent="réalités." />
         <div className="grid gap-10 md:grid-cols-2 md:gap-8">
           {projets.map((p, i) => (
-            <div key={p.nom} className={i === 0 ? "md:col-span-2" : ""}>
+            <div key={p.nom} className={`min-w-0 ${i === 0 ? "md:col-span-2" : ""}`}>
               <CarteProjet projet={p} index={i} />
             </div>
           ))}

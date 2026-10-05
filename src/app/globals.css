@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -43,9 +44,33 @@
   --font-signature: var(--font-allura);
 }
 
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+/* Transition ronde du mode sombre / clair, depuis le bouton */
+@property --vt-rayon {
+  syntax: "<length>";
+  initial-value: 0px;
+  inherits: false;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  -webkit-mask: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-rayon) - 140px), transparent var(--vt-rayon));
+  mask: radial-gradient(circle at var(--vt-x) var(--vt-y), #000 calc(var(--vt-rayon) - 140px), transparent var(--vt-rayon));
+}
+html.vt *,
+html.vt *::before,
+html.vt *::after {
+  transition: none !important;
+}
+
+/* Curseur personnalisé (rond bleu) sur ordinateur */
+@media (pointer: fine) {
+  html.curseur-perso,
+  html.curseur-perso * {
+    cursor: none !important;
+  }
 }
 
 body {
@@ -89,18 +114,6 @@ body {
     linear-gradient(to bottom, var(--bordure) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
-}
-
-/* Bande défilante des outils */
-.defilement {
-  animation: defiler 40s linear infinite;
-}
-.defilement-inverse {
-  animation: defiler 46s linear infinite reverse;
-}
-@keyframes defiler {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
 }
 
 /* Halos flottants */
@@ -150,9 +163,14 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .defilement, .defilement-inverse, .flotter, .texte-brillant, .bordure-tournante::before {
-    animation: none;
+
+/* Sur téléphone (pas de survol) : l'aperçu des sites défile tout seul, doucement */
+@media (hover: none) {
+  .apercu-defile {
+    animation: defile-apercu 16s ease-in-out infinite alternate;
   }
+}
+@keyframes defile-apercu {
+  0%, 10% { object-position: top; }
+  90%, 100% { object-position: bottom; }
 }

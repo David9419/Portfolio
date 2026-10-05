@@ -1,7 +1,9 @@
-import { BarreProgression, Chargement, HaloSouris } from "@/components/effets";
+import { Curseur } from "@/components/curseur";
+import { Chargement, HaloSouris } from "@/components/effets";
 import { Navigation } from "@/components/navigation";
 import { SectionAPropos } from "@/components/sections/a-propos";
 import { SectionAccueil } from "@/components/sections/accueil";
+import { BandeDevise } from "@/components/sections/bande-devise";
 import { BandeOutils } from "@/components/sections/bande-outils";
 import { SectionCompetences } from "@/components/sections/competences";
 import { SectionContact } from "@/components/sections/contact";
@@ -14,7 +16,7 @@ export default function Page() {
   return (
     <>
       <Chargement />
-      <BarreProgression />
+      <Curseur />
       <HaloSouris />
       <Navigation />
       <main className="relative z-10 overflow-x-clip">
@@ -25,6 +27,8 @@ export default function Page() {
         <SectionCompetences />
         <SectionParcours />
         <SectionMethode />
+        <BandeDevise />
+        <div className="h-24 md:h-32" />
         <SectionContact />
       </main>
       <PiedDePage />

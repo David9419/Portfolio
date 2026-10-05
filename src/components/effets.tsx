@@ -1,64 +1,87 @@
 "use client";
 
-import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
+import { animate, AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/logo";
 
-// Écran d'ouverture : le logo se dessine, puis le rideau se lève.
+const rideau = [0.76, 0, 0.24, 1] as const;
+
+// Écran d'arrivée : le logo se dessine, un compteur monte jusqu'à 100,
+// puis deux rideaux (bleu nuit et bleu) se lèvent pour révéler le site.
 export function Chargement() {
   const [visible, setVisible] = useState(true);
+  const compteur = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const minuteur = setTimeout(() => setVisible(false), 2100);
-    return () => clearTimeout(minuteur);
+    const controle = animate(0, 100, {
+      duration: 2,
+      ease: [0.65, 0, 0.35, 1],
+      onUpdate: (v) => {
+        if (compteur.current) compteur.current.textContent = String(Math.round(v)).padStart(3, "0");
+      },
+      onComplete: () => setVisible(false),
+    });
+    return () => controle.stop();
   }, []);
 
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] grid place-items-center bg-nuit text-white"
-          exit={{ y: "-100%" }}
-          transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+          className="fixed inset-0 z-[150]"
+          exit="sortie"
+          variants={{ sortie: { transition: { when: "afterChildren" } } }}
         >
-          <div className="flex flex-col items-center gap-6">
-            <Logo className="h-20 w-auto text-white" anime />
-            <motion.p
-              initial={{ opacity: 0, letterSpacing: "0.1em" }}
-              animate={{ opacity: 1, letterSpacing: "0.5em" }}
-              transition={{ delay: 0.8, duration: 1 }}
-              className="font-titre text-sm font-semibold"
+          <motion.div
+            className="absolute inset-0 bg-bleu"
+            variants={{ sortie: { clipPath: "inset(0 0 100% 0)", transition: { duration: 1, ease: rideau, delay: 0.12 } } }}
+            style={{ clipPath: "inset(0 0 0% 0)" }}
+          />
+          <motion.div
+            className="absolute inset-0 grid place-items-center overflow-hidden bg-nuit text-white"
+            variants={{ sortie: { clipPath: "inset(0 0 100% 0)", transition: { duration: 0.9, ease: rideau } } }}
+            style={{ clipPath: "inset(0 0 0% 0)" }}
+          >
+            <div className="absolute size-[480px] rounded-full bg-bleu/25 blur-[120px]" aria-hidden />
+            <motion.div
+              className="relative flex flex-col items-center gap-7"
+              variants={{ sortie: { y: -60, opacity: 0, transition: { duration: 0.5, ease: rideau } } }}
             >
-              DAVID <span className="text-bleu">BARON</span>
-            </motion.p>
-            <div className="h-px w-40 overflow-hidden bg-white/10">
-              <motion.div
-                className="h-full bg-bleu"
-                initial={{ x: "-100%" }}
-                animate={{ x: "0%" }}
-                transition={{ duration: 1.8, ease: "easeInOut" }}
-              />
-            </div>
-          </div>
+              <Logo className="h-20 w-auto text-white" anime />
+              <div className="overflow-hidden">
+                <motion.p
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-titre text-sm font-semibold tracking-[0.5em]"
+                >
+                  DAVID <span className="text-bleu">BARON</span>
+                </motion.p>
+              </div>
+              <div className="h-px w-48 overflow-hidden bg-white/10">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-bleu-clair to-bleu"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  style={{ originX: 0 }}
+                  transition={{ duration: 2, ease: [0.65, 0, 0.35, 1] }}
+                />
+              </div>
+            </motion.div>
+            <p className="font-titre absolute right-6 bottom-6 text-6xl font-black text-white/10 tabular-nums md:right-10 md:bottom-8 md:text-8xl">
+              <span ref={compteur}>000</span>
+            </p>
+            <p className="font-titre absolute bottom-8 left-6 text-[10px] tracking-[0.4em] text-white/40 md:left-10 md:bottom-10">
+              IDÉES / CRÉATIONS / PROJETS
+            </p>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
 
-// Fine barre bleue en haut de l'écran qui montre l'avancement de la lecture.
-export function BarreProgression() {
-  const { scrollYProgress } = useScroll();
-  const echelle = useSpring(scrollYProgress, { stiffness: 120, damping: 25 });
-  return (
-    <motion.div
-      style={{ scaleX: echelle }}
-      className="fixed inset-x-0 top-0 z-[80] h-[3px] origin-left bg-gradient-to-r from-bleu-clair via-bleu to-bleu-fonce"
-    />
-  );
-}
-
-// Halo bleu qui suit la souris (ordinateur uniquement).
+// Halo bleu très doux qui suit la souris (ordinateur uniquement).
 export function HaloSouris() {
   const ref = useRef<HTMLDivElement>(null);
 
