@@ -21,6 +21,7 @@ const allura = Allura({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.david-baron.com"),
   title: "David Baron — Portfolio | Créateur digital & entrepreneur",
   description:
     "Je crée des sites, des logiciels, des SaaS et des solutions digitales. Des idées aux projets concrets : MivtsaNow, GoldenChance et plus encore.",
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
     title: "David Baron — Portfolio",
     description: "Créateur digital & entrepreneur. Des idées aux projets concrets.",
     type: "website",
+    url: "https://www.david-baron.com",
     locale: "fr_FR",
   },
 };
