@@ -8,40 +8,35 @@ import { Apparition, CarteInclinable, EnteteSection } from "@/components/animati
 import { IconeInstagram } from "@/components/icones";
 import { projets, type Projet } from "@/lib/contenu";
 
-// Aperçu d'une boutique à venir (en attendant le vrai lien).
-function BoutiqueAVenir() {
-  const articles = [
-    { prix: "35 €", teinte: "from-teal-400/70 to-teal-900" },
-    { prix: "18 €", teinte: "from-sky-400/70 to-indigo-900" },
-    { prix: "52 €", teinte: "from-amber-300/70 to-orange-900" },
-    { prix: "24 €", teinte: "from-rose-300/70 to-rose-900" },
-    { prix: "40 €", teinte: "from-emerald-300/70 to-emerald-900" },
-    { prix: "15 €", teinte: "from-violet-300/70 to-violet-900" },
-  ];
+// Aperçu de la boutique Vinted : la veste C.P. Company en vedette, présentée comme une annonce.
+function BoutiqueVinted() {
   return (
-    <div className="absolute inset-0 bg-[#f6f7f8] p-4 text-[#111] md:p-5">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-black tracking-tight text-teal-600">Vinted</span>
-        <span className="h-5 w-24 rounded-full bg-black/5" />
+    <div className="absolute inset-0 grid grid-cols-[1.05fr_1fr] bg-[#f6f7f8] text-[#111]">
+      <div className="relative overflow-hidden">
+        <Image
+          src="/projets/veste-cp-company.jpg"
+          alt="Veste C.P. Company bleu marine en vente sur Vinted"
+          fill
+          sizes="(min-width: 768px) 300px, 50vw"
+          className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+        />
+        <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold shadow">
+          Neuf avec étiquette
+        </span>
       </div>
-      <div className="mt-3 grid grid-cols-3 gap-2.5">
-        {articles.map((a, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 + i * 0.08 }}
-            className="rounded-lg bg-white p-1.5 shadow-sm"
-          >
-            <div className={`aspect-[4/3] rounded-md bg-gradient-to-br ${a.teinte}`} />
-            <p className="mt-1 text-[10px] font-bold">{a.prix}</p>
-          </motion.div>
-        ))}
-      </div>
-      <div className="absolute inset-0 grid place-items-center bg-black/40 backdrop-blur-[2px]">
-        <span className="rounded-full border border-white/30 bg-black/50 px-4 py-2 text-xs font-semibold tracking-wider text-white uppercase">
-          Boutique bientôt en ligne
+      <div className="flex flex-col justify-center gap-2 p-4 md:p-5">
+        <span className="text-xs font-black tracking-tight text-[#09b1ba] md:text-sm">Vinted</span>
+        <p className="text-[10px] font-semibold tracking-widest text-black/40 uppercase">C.P. Company</p>
+        <p className="text-sm leading-snug font-bold md:text-base">Veste à capuche bleu marine</p>
+        <div className="mt-1 flex flex-wrap gap-1.5">
+          {["Lens sur la manche", "Nylon", "Capuche"].map((t) => (
+            <span key={t} className="rounded-full bg-black/5 px-2 py-0.5 text-[10px] text-black/60">
+              {t}
+            </span>
+          ))}
+        </div>
+        <span className="mt-2 inline-flex w-fit items-center rounded-md bg-[#09b1ba] px-3 py-1.5 text-[11px] font-semibold text-white">
+          Voir l’annonce
         </span>
       </div>
     </div>
@@ -80,7 +75,7 @@ function Apercu({ projet, index }: { projet: Projet; index: number }) {
             </span>
           </>
         ) : (
-          <BoutiqueAVenir />
+          <BoutiqueVinted />
         )}
       </div>
     </div>
@@ -119,7 +114,7 @@ function CarteProjet({ projet, index }: { projet: Projet; index: number }) {
                   rel="noopener noreferrer"
                   className="group/lien inline-flex items-center gap-2 rounded-full bg-bleu px-5 py-2.5 text-sm font-semibold text-white"
                 >
-                  Voir le site
+                  {projet.libelleLien ?? "Voir le site"}
                   <ArrowUpRight className="size-4 transition-transform group-hover/lien:translate-x-0.5 group-hover/lien:-translate-y-0.5" />
                 </a>
               )}

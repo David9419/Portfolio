@@ -51,6 +51,7 @@ export type Projet = {
   description: string;
   role: string[];
   site?: string;
+  libelleLien?: string;
   domaine?: string;
   image?: string;
   instagram?: string;
@@ -79,8 +80,8 @@ export const projets: Projet[] = [
     description:
       "Mon projet entrepreneurial autour des concours et tirages au sort. J’ai travaillé sur son identité, son site internet, sa communication, ses supports visuels, son modèle économique et son développement.",
     role: ["Identité", "Site internet", "Supports visuels", "Modèle économique"],
-    site: "https://golden-chance-sandy.vercel.app/",
-    domaine: "golden-chance-sandy.vercel.app",
+    site: "https://golden-chance.website/",
+    domaine: "golden-chance.website",
     image: "/projets/goldenchance.jpg",
     instagram: "https://www.instagram.com/goldenchanceconcours",
     couleurs: ["#F5B83D", "#B45309"],
@@ -90,10 +91,11 @@ export const projets: Projet[] = [
     categorie: "Commerce en ligne · Vinted",
     annee: "En cours",
     description:
-      "Une activité d’achat-revente, notamment sur Vinted. Elle me permet de développer mes compétences commerciales : repérer les opportunités, gérer des produits, créer des annonces et comprendre la vente en ligne.",
-    role: ["Repérage d’opportunités", "Annonces", "Gestion des produits", "Vente"],
+      "Une activité d’achat-revente sur Vinted, qui démarre avec des vestes C.P. Company. Elle me permet de développer mes compétences commerciales : repérer les opportunités, gérer des produits, créer des annonces et comprendre la vente en ligne.",
+    role: ["Repérage d’opportunités", "Photos & annonces", "Gestion des produits", "Vente"],
+    site: "https://www.vinted.fr/member/3195123481",
+    libelleLien: "Voir ma boutique",
     domaine: "vinted.fr",
-    lienAVenir: "Lien Vinted bientôt disponible",
     couleurs: ["#14B8A6", "#0F766E"],
   },
 ];
