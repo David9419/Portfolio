@@ -91,12 +91,27 @@ export const projets: Projet[] = [
     categorie: "Commerce en ligne · Vinted",
     annee: "En cours",
     description:
-      "Une activité d’achat-revente sur Vinted, qui démarre avec des vestes C.P. Company. Elle me permet de développer mes compétences commerciales : repérer les opportunités, gérer des produits, créer des annonces et comprendre la vente en ligne.",
+      "Une activité d’achat-revente sur Vinted, qui démarrera avec des vestes C.P. Company. Elle me permet de développer mes compétences commerciales : repérer les opportunités, gérer des produits, créer des annonces et comprendre la vente en ligne.",
     role: ["Repérage d’opportunités", "Photos & annonces", "Gestion des produits", "Vente"],
-    site: "https://www.vinted.fr/member/3195123481",
-    libelleLien: "Voir ma boutique",
     domaine: "vinted.fr",
+    lienAVenir: "Boutique bientôt ouverte",
     couleurs: ["#14B8A6", "#0F766E"],
+  },
+];
+
+// Sites réalisés pour des clients
+export const realisationsClients: Projet[] = [
+  {
+    nom: "My Private Trip",
+    categorie: "Site client · Voyages & conciergerie de luxe",
+    annee: "2026",
+    description:
+      "Le site d’une agence de voyages et de conciergerie haut de gamme (villas, chef privé, voyages sur mesure). J’ai refait entièrement l’ancien site : une vidéo plein écran qui avance quand on descend dans la page, un design élégant fidèle à leur charte, puis le nom de domaine et la mise en ligne.",
+    role: ["Refonte complète", "Vidéo au défilement", "Design sur mesure", "Nom de domaine & mise en ligne"],
+    site: "https://www.my-private-trip.com/",
+    domaine: "my-private-trip.com",
+    image: "/projets/myprivatetrip.jpg",
+    couleurs: ["#39B8D6", "#07527A"],
   },
 ];
 

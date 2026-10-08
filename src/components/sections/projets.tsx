@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { Apparition, CarteInclinable, EnteteSection } from "@/components/animations";
 import { IconeInstagram } from "@/components/icones";
-import { projets, type Projet } from "@/lib/contenu";
+import { projets, realisationsClients, type Projet } from "@/lib/contenu";
 
 // Aperçu de la boutique Vinted : la veste C.P. Company en vedette, présentée comme une annonce.
 function BoutiqueVinted() {
@@ -36,7 +36,7 @@ function BoutiqueVinted() {
           ))}
         </div>
         <span className="mt-2 inline-flex w-fit items-center rounded-md bg-[#09b1ba] px-3 py-1.5 text-[11px] font-semibold text-white">
-          Voir l’annonce
+          Bientôt en vente
         </span>
       </div>
     </div>
@@ -154,6 +154,18 @@ export function SectionProjets() {
               <CarteProjet projet={p} index={i} />
             </div>
           ))}
+        </div>
+
+        {/* Sites créés pour des clients */}
+        <div className="mt-28 md:mt-36">
+          <EnteteSection numero="02 · B" libelle="Pour mes clients" titre="Leurs idées," accent="mon savoir-faire." />
+          <div className="grid gap-10">
+            {realisationsClients.map((p) => (
+              <div key={p.nom} className="min-w-0">
+                <CarteProjet projet={p} index={0} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
