@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Allura, Inter, Montserrat } from "next/font/google";
 import { FournisseurTheme } from "@/components/fournisseur-theme";
+import { seo, urlSite } from "@/lib/seo";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -21,16 +22,36 @@ const allura = Allura({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.david-baron.com"),
-  title: "David Baron — Portfolio | Créateur digital & entrepreneur",
-  description:
-    "Je crée des sites, des logiciels, des SaaS et des solutions digitales. Des idées aux projets concrets : MivtsaNow, GoldenChance et plus encore.",
+  metadataBase: new URL(urlSite),
+  title: { default: seo.titre, template: "%s | David Baron" },
+  description: seo.description,
+  keywords: seo.motsCles,
+  applicationName: seo.titreCourt,
+  authors: [{ name: "David Baron", url: urlSite }],
+  creator: "David Baron",
+  publisher: "David Baron",
+  category: "technology",
+  alternates: { canonical: "/" },
+  formatDetection: { telephone: true, email: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
   openGraph: {
-    title: "David Baron — Portfolio",
-    description: "Créateur digital & entrepreneur. Des idées aux projets concrets.",
-    type: "website",
-    url: "https://www.david-baron.com",
+    title: seo.titre,
+    description: seo.description,
+    url: "/",
+    siteName: seo.titreCourt,
+    type: "profile",
+    firstName: "David",
+    lastName: "Baron",
     locale: "fr_FR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: seo.titre,
+    description: seo.description,
   },
 };
 

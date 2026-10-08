@@ -11,10 +11,16 @@ import { SectionMethode } from "@/components/sections/methode";
 import { SectionParcours } from "@/components/sections/parcours";
 import { PiedDePage } from "@/components/sections/pied";
 import { SectionProjets } from "@/components/sections/projets";
+import { donneesStructurees } from "@/lib/seo";
 
 export default function Page() {
   return (
     <>
+      {/* Fiche d'identité pour Google (qui je suis, mes services, mes projets) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(donneesStructurees()).replace(/</g, "\\u003c") }}
+      />
       <Chargement />
       <Curseur />
       <HaloSouris />
